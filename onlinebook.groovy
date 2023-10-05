@@ -5,7 +5,7 @@ pipeline{   // declarative pipeline
     stages{
         stage('Git checkout from Github'){   // stage 1
             steps{
-                git branch: 'master', credentialsId: 'ec2', url: 'git@github.com:usertan786/onlinebookstore.git' 
+                git branch: 'master', credentialsId: 'ec2', url: 'git@github.com:usertan786/onlinebook@2store.git' 
                 sh 'ls'
             }
         }
@@ -26,8 +26,8 @@ pipeline{   // declarative pipeline
                 sh '''  
                 sudo apt install awscli -y 
                 aws s3 ls 
-                sudo mv /home/ubuntu/workspace/onlinebook/target/onlinebookstore.war /home/ubuntu/workspace/onlinebook/target/bookstore-${BUILD_ID}.war
-                aws s3 cp /home/ubuntu/workspace/onlinebook/target/bookstore-${BUILD_ID}.war s3://student-new-jenkins
+                sudo mv /home/ubuntu/workspace/onlinebook@2/target/onlinebookstore.war /home/ubuntu/workspace/onlinebook@2/target/bookstore-${BUILD_ID}.war
+                aws s3 cp /home/ubuntu/workspace/onlinebook@2/target/bookstore-${BUILD_ID}.war s3://student-new-jenkins
                 '''
                 }
             }
