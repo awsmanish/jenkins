@@ -26,8 +26,8 @@ pipeline{   // declarative pipeline
                 sh '''  
                 sudo apt install awscli -y 
                 aws s3 ls 
-                sudo mv /home/ubuntu/workspace/onlinebook@2/target/onlinebookstore.war /home/ubuntu/workspace/onlinebook@2/target/bookstore-${BUILD_ID}.war
-                aws s3 cp /home/ubuntu/workspace/onlinebook@2/target/bookstore-${BUILD_ID}.war s3://student-new-jenkins
+                sudo mv /home/ubuntu/workspace/onlinebook/target/onlinebookstore.war /home/ubuntu/workspace/onlinebook/target/bookstore-${BUILD_ID}.war
+                aws s3 cp /home/ubuntu/workspace/onlinebook/target/bookstore-${BUILD_ID}.war s3://student-new-jenkins
                 '''
                 }
             }
