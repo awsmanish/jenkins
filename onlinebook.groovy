@@ -5,7 +5,7 @@ pipeline{   // declarative pipeline
     stages{
         stage('Git checkout from Github'){   // stage 1
             steps{
-                git branch: 'master', credentialsId: 'ec2', url: 'git@github.com:usertan786/onlinebook@2store.git' 
+                git branch: 'master', credentialsId: 'ec2', url: 'git@github.com:usertan786/onlinebookstore.git' 
                 sh 'ls'
             }
         }
