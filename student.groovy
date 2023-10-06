@@ -1,70 +1,47 @@
 pipeline{   // declarative pipeline
-    agent {
+     agent {
         label 'worker-node'
     }
     stages{
         stage('Git checkout from Github'){   // stage 1
             steps{
-                git branch: 'master', credentialsId: 'ec2', url: 'git@github.com:usertan786/student-ui.git' 
+                git credentialsId: '4db30dcd-39cf-4f58-a1a6-44daf74ad2b5', url: 'git@github.com:awsmanish/student-ui.git' 
                 sh 'ls'
             }
         }
         stage('Build project '){   //  stage 2
             steps{
                 echo "Build with maven" 
-                sh "ls -l"   
+                sh "ls -l"
+                sh "sudo apt update -y"   
                 sh "sudo apt install maven -y"
                 sh "sudo mvn clean package"
                 sh "ls -l target" 
 
-                
+                    
             }
         }
         stage('push artifact to s3 bucket'){
             steps{
-                withAWS(credentials: 'new-creds', region: 'us-east-1') {
+                withAWS(credentials: 'news3', region: 'ap-southeast-2') {
                 sh '''  
                 sudo apt install awscli -y 
                 aws s3 ls 
-                sudo mv /home/ubuntu/workspace/student/target/studentapp-2.2-SNAPSHOT.war /home/ubuntu/workspace/student/target/student-${BUILD_ID}.war
-                aws s3 cp /home/ubuntu/workspace/student/target/student-${BUILD_ID}.war s3://student-new-jenkins
+                sudo mv /home/ubuntu/workspace/f2-new/target/studentapp-2.2-SNAPSHOT.war /home/ubuntu/workspace/f2-new/target/student-${BUILD_ID}.war
+                aws s3 cp /home/ubuntu/workspace/f2-new/target/student-${BUILD_ID}.war s3://student-war-file/
+                ls -a
                 '''
                 }
             }
         }
         
-        // stage('deploy the artifact'){   
-        //     steps{
-        //         withCredentials([sshUserPrivateKey(credentialsId: 'amazon', keyFileVariable: 'ec2')]) {
-        //            sh '''  
-        //            ssh -o StrictHostKeyChecking=no -i $ec2  ec2-user@54.204.211.0<<EOF
-        //            sudo yum update -y
-        //            sudo yum install java-openjdk -y
-        //            curl -O https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.80/bin/apache-tomcat-9.0.80.tar.gz 
-        //            sudo tar -xvf apache-tomcat-9.0.80.tar.gz -C /opt/
-        //            sudo mv /opt/apache-tomcat-9.0.80 /opt/tomcat
-        //            sudo aws s3 cp s3://student-new-jenkins/student-31.war .
-        //            sudo mv student-${BUILD_ID}.war student.war
-        //            ls
-        //            sudo mv student.war /opt/tomcat/webapps/
-        //            cd /opt/tomcat 
-        //            pwd
-        //            ls -l
-        //            sudo ./bin/catalina.sh start
-
-                   
-        //            '''
-        //         }
-                
-        //     }
-        // }
         stage('deploy the artifact'){   
             steps{
-               withCredentials([sshUserPrivateKey(credentialsId: 'amazon', keyFileVariable: 'ec2', usernameVariable: 'ec2-user'), usernamePassword(credentialsId: 'creds-new', passwordVariable: 'AWS_SECRET_KEY', usernameVariable: 'AWS_ACCESS_KEY')]) {
+                withCredentials([sshUserPrivateKey(credentialsId: 'worker-node', keyFileVariable: 'ubuntu_user', usernameVariable: 'ubuntu'), usernamePassword(credentialsId: 'acess_or_ser', passwordVariable: 'AWS_SECRET_KEY', usernameVariable: 'AWS_ACCESS_KEY')]) { // ec2-user@54.152.138.33-----web servicw wali ip dalna
                    sh '''  
-                   ssh -o StrictHostKeyChecking=no -i $ec2  ec2-user@54.166.174.172<<EOF
-                   sudo yum update -y
-                   sudo yum install java-openjdk -y
+                   ssh -o StrictHostKeyChecking=no -i $ubuntu_user  ubuntu@3.27.59.201<<EOF
+                   sudo apt update -y
+                   sudo apt install java-openjdk -y
                    curl -O https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.80/bin/apache-tomcat-9.0.80.tar.gz 
                    sudo tar -xvf apache-tomcat-9.0.80.tar.gz -C /opt/
                    sudo mv /opt/apache-tomcat-9.0.80 /opt/tomcat
@@ -80,7 +57,6 @@ pipeline{   // declarative pipeline
                    ls -l
                    sudo ./bin/catalina.sh start
 
-                   
                    '''
                 }
                 
