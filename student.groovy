@@ -48,7 +48,7 @@ pipeline{   // declarative pipeline
                    aws configure set aws_access_key_id ${AWS_ACCESS_KEY} 
                    aws configure set aws_secret_access_key ${AWS_SECRET_KEY}
                    aws s3 ls 
-                   aws s3 cp s3://student-new-jenkins/student-${BUILD_ID}.war .
+                   aws s3 cp s3://student-war-file/student-${BUILD_ID}.war .
                    sudo mv student-${BUILD_ID}.war student.war
                    ls
                    sudo mv student.war /opt/tomcat/webapps/
